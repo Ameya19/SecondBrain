@@ -18,6 +18,7 @@ namespace SecondBrain.Infrastructure.Data
 
         public DbSet<KnowledgeChunk> KnowledgeChunks => Set<KnowledgeChunk>();
         public DbSet<Source> Sources => Set<Source>();
+        public DbSet<IngestionJob> IngestionJobs => Set<IngestionJob>();
         public DbSet<ChunkTag> ChunkTags => Set<ChunkTag>();
         public DbSet<Tag> Tags => Set<Tag>();
         public DbSet<Query> Queries => Set<Query>();
