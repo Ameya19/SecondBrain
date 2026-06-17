@@ -30,6 +30,21 @@ namespace SecondBrain.Infrastructure.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SecondBrainDbContext).Assembly);
 
             modelBuilder.HasPostgresExtension("vector");
+
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                entity.SetTableName(entity.GetTableName()!.ToLower());
+
+                foreach(var property in entity.GetProperties())
+                {
+                    property.SetColumnName(property.GetColumnName()!.ToLower());
+                }
+
+                foreach(var key in entity.GetForeignKeys())
+                {
+                    key.SetConstraintName(key.GetConstraintName()!.ToLower());
+                }
+            }
         }
     }
 }

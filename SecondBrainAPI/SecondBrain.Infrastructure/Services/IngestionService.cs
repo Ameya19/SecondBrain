@@ -64,7 +64,7 @@ namespace SecondBrain.Infrastructure.Services
                     Id = Guid.NewGuid(),
                     SourceId = source.Id,
                     Content = pair.First,
-                    IngestedAt = DateTimeOffset.Now,
+                    IngestedAt = DateTimeOffset.UtcNow,
                     AccessCount = 0,
                     Embedding = new Pgvector.Vector(pair.Second)
                 }).ToList();

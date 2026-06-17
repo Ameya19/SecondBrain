@@ -10,11 +10,15 @@ namespace SecondBrain.API.Controllers
     {
         private readonly IEmbeddingService embeddingService;
         private readonly IIngestionService ingestionService;
+        private readonly IGenerationService generationService;
+        private readonly IQueryService queryService;
 
-        public BrainController(IEmbeddingService embeddingService, IIngestionService ingestionService)
+        public BrainController(IEmbeddingService embeddingService, IIngestionService ingestionService, IGenerationService generationService, IQueryService queryService)
         {
             this.embeddingService = embeddingService;
             this.ingestionService = ingestionService;
+            this.generationService = generationService;
+            this.queryService = queryService;
         }
 
         [HttpPost("test-embed")]
@@ -36,6 +40,23 @@ namespace SecondBrain.API.Controllers
             var sourceId = await ingestionService.IngestAsync(request.Content, new SourceMetadata(request.Title, request.Type, request.Url, request.PublishedAt, request.Tags));
 
             return Ok(new { SourceId = sourceId });
+        }
+
+        [HttpPost("test-generate")]
+        public async Task<IActionResult> TestGenerate([FromBody] string prompt)
+        {
+            var response = await generationService.GenerateAsync(prompt);
+            return Ok(new
+            {
+                Response = response
+            });
+        }
+
+        [HttpPost("query")]
+        public async Task<IActionResult> Query([FromBody] QueryRequest request)
+        {
+            var result = await this.queryService.QueryAsync(request.Question, new QueryOptions(request.TopK ?? 5));
+            return Ok(result);
         }
     }
 }

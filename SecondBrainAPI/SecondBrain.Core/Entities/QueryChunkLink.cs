@@ -10,7 +10,7 @@ namespace SecondBrain.Core.Entities
     {
         public Guid QueryId { get; set; }
         public Guid ChunkId { get; set; }
-        public int RelevanceScore { get; set; } // Optional: score to indicate relevance of the chunk to the query
+        public float RelevanceScore { get; set; } // Optional: score to indicate relevance of the chunk to the query
         public Query Query { get; set; } = null!;
         public KnowledgeChunk Chunk { get; set; } = null!;
     }

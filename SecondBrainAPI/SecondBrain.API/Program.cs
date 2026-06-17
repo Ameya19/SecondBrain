@@ -13,8 +13,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient<OllamaEmbeddingService>();
+builder.Services.AddHttpClient<OllamaGenerationService>();
+
 builder.Services.AddScoped<IEmbeddingService, OllamaEmbeddingService>();
 builder.Services.AddScoped<IIngestionService, IngestionService>();
+builder.Services.AddScoped<IGenerationService, OllamaGenerationService>();
+builder.Services.AddScoped<IQueryService, QueryService>();
 
 //DBContext
 builder.Services.AddDbContext<SecondBrainDbContext>(options =>
