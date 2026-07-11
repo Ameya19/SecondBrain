@@ -1,0 +1,300 @@
+<div class="min-h-screen bg-black overflow-hidden relative">
+    <!-- Animated background grid -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute inset-0" style="background-image: linear-gradient(0deg, transparent 24%, rgba(0, 255, 255, 0.05) 25%, rgba(0, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.05) 75%, rgba(0, 255, 255, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 255, 0.05) 25%, rgba(0, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.05) 75%, rgba(0, 255, 255, 0.05) 76%, transparent 77%, transparent); background-size: 50px 50px;"></div>
+    </div>
+
+    <!-- Neon glow orbs -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 border-b border-cyan-900/50 bg-black/40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-10">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-pulse"></div>
+                <p class="text-xs font-mono text-indigo-400 tracking-widest">KNOWLEDGE_SEARCH_ENGINE</p>
+            </div>
+            <h1 class="text-6xl font-black text-white mb-2">
+                Search Knowledge Base
+                <span class="bg-gradient-to-r from-indigo-400 to-cyan-500 bg-clip-text text-transparent">Retrieval</span>
+            </h1>
+            <p class="text-slate-500 font-mono text-sm">Keyword search with temporal filtering and advanced refinement</p>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="relative z-10 max-w-7xl mx-auto px-6 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Filters sidebar -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-6 space-y-6">
+                    <!-- Search input -->
+                    <div class="bg-gradient-to-b from-slate-900 to-black border border-slate-800 rounded-2xl p-6">
+                        <label class="block text-sm font-mono text-indigo-400 mb-3 uppercase tracking-wider">Keyword Search</label>
+                        <input
+                            type="text"
+                            [(ngModel)]="searchQuery"
+                            (keyup.enter)="onSearch()"
+                            placeholder="rag, embeddings, vectors..."
+                            class="w-full px-4 py-3 bg-black border border-slate-700 hover:border-slate-600 focus:border-indigo-500 rounded-lg text-white placeholder-slate-600 focus:outline-none transition-all duration-300 font-mono text-sm"
+                        />
+                    </div>
+
+                    <!-- Date range -->
+                    <div class="bg-gradient-to-b from-slate-900 to-black border border-slate-800 rounded-2xl p-6">
+                        <label class="block text-sm font-mono text-cyan-400 mb-3 uppercase tracking-wider">Date Range</label>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-slate-500 font-mono">From</label>
+                                <input
+                                    type="date"
+                                    [(ngModel)]="fromDate"
+                                    class="w-full px-3 py-2 bg-black border border-slate-700 hover:border-slate-600 focus:border-cyan-500 rounded-lg text-white font-mono text-sm focus:outline-none transition-all mt-1"
+                                />
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500 font-mono">To</label>
+                                <input
+                                    type="date"
+                                    [(ngModel)]="toDate"
+                                    class="w-full px-3 py-2 bg-black border border-slate-700 hover:border-slate-600 focus:border-cyan-500 rounded-lg text-white font-mono text-sm focus:outline-none transition-all mt-1"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Type filter -->
+                    <div class="bg-gradient-to-b from-slate-900 to-black border border-slate-800 rounded-2xl p-6">
+                        <label class="block text-sm font-mono text-pink-400 mb-3 uppercase tracking-wider">Source Type</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    [value]="null"
+                                    [(ngModel)]="selectedType"
+                                    class="w-4 h-4"
+                                />
+                                <span class="text-sm text-slate-400">All Types</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    value="note"
+                                    [(ngModel)]="selectedType"
+                                    class="w-4 h-4"
+                                />
+                                <span class="text-sm text-slate-400">📝 Notes</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    value="pdf"
+                                    [(ngModel)]="selectedType"
+                                    class="w-4 h-4"
+                                />
+                                <span class="text-sm text-slate-400">📄 PDFs</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    value="url"
+                                    [(ngModel)]="selectedType"
+                                    class="w-4 h-4"
+                                />
+                                <span class="text-sm text-slate-400">🔗 URLs</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    value="youtube"
+                                    [(ngModel)]="selectedType"
+                                    class="w-4 h-4"
+                                />
+                                <span class="text-sm text-slate-400">▶ YouTube</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Search button -->
+                    <button
+                        (click)="onSearch()"
+                        [disabled]="isLoading"
+                        class="w-full px-6 py-3 bg-gradient-to-br from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 disabled:from-slate-700 disabled:to-slate-700 text-white font-bold rounded-lg transition-all duration-300 disabled:cursor-not-allowed font-mono uppercase tracking-wider border border-indigo-400/50"
+                    >
+                        @if (!isLoading) {
+                            <span>⚡ SEARCH</span>
+                        } @else {
+                            <span class="flex items-center justify-center gap-2">
+                                <span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                SEARCHING
+                            </span>
+                        }
+                    </button>
+
+                    <!-- Reset button -->
+                    <button
+                        (click)="onReset()"
+                        class="w-full px-4 py-2 bg-slate-800/50 hover:bg-slate-800 text-slate-300 font-mono text-sm rounded-lg transition-all border border-slate-700"
+                    >
+                        RESET FILTERS
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="lg:col-span-3">
+                <!-- Results header -->
+                @if (results) {
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">
+                                    {{ results.totalCount }}
+                                    <span class="text-slate-500 text-lg">result{{ results.totalCount !== 1 ? 's' : '' }} found</span>
+                                </h2>
+                                @if (searchQuery) {
+                                    <p class="text-sm text-slate-500 font-mono">
+                                        For: <span class="text-indigo-400">"{{ searchQuery }}"</span>
+                                    </p>
+                                }
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-slate-500 font-mono">
+                                    Page {{ results.page }} of {{ results.totalPages }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Loading state -->
+                @if (isLoading) {
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-2xl p-12 text-center">
+                        <div class="inline-block w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p class="text-slate-500 font-mono">SEARCHING_KNOWLEDGE_BASE...</p>
+                    </div>
+                }
+
+                <!-- Results list -->
+                @if (results && !isLoading && results.results.length > 0) {
+                    <div class="space-y-4">
+                        @for (result of results.results; track result.id; let i = $index) {
+                            <div
+                                class="group bg-gradient-to-b from-slate-900 to-black border border-slate-800 hover:border-indigo-600/50 rounded-2xl p-6 transition-all duration-300 hover:bg-gradient-to-b hover:from-indigo-950/20 hover:to-black animate-in fade-in slide-in-from-bottom-4"
+                                [style.animation-delay]="(i * 0.05) + 's'"
+                            >
+                                <div class="flex items-start gap-4 mb-4">
+                                    <div class="text-2xl">
+                                        @if (result.source.type === 'note') { <span>📝</span> }
+                                        @if (result.source.type === 'pdf') { <span>📄</span> }
+                                        @if (result.source.type === 'url') { <span>🔗</span> }
+                                        @if (result.source.type === 'youtube') { <span>▶</span> }
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-white group-hover:text-indigo-300 transition-colors mb-1">
+                                            {{ result.source.title }}
+                                        </h3>
+                                        <p class="text-xs text-slate-500 font-mono uppercase">{{ result.source.type }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Preview -->
+                                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                    {{ result.preview }}
+                                </p>
+
+                                <!-- Metadata -->
+                                <div class="flex items-center justify-between text-xs text-slate-500 font-mono mb-3 pb-3 border-b border-slate-700">
+                                    <span>Added: {{ result.ingestedAt | date: 'MMM dd, yyyy' }}</span>
+                                    <span>Accessed: {{ result.accessCount }} times</span>
+                                </div>
+
+                                <!-- Tags -->
+                                @if (result.source.tags && result.source.tags.length > 0) {
+                                    <div class="flex flex-wrap gap-2">
+                                        @for (tag of result.source.tags; track tag) {
+                                            <span class="px-2 py-1 bg-slate-800 text-slate-400 rounded text-xs font-mono border border-slate-700">
+                                                #{{ tag }}
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Empty state -->
+                @if (results && !isLoading && results.results.length === 0) {
+                    <div class="text-center py-20">
+                        <div class="text-6xl mb-6 opacity-50">🔍</div>
+                        <p class="text-slate-400 text-lg font-mono">NO_RESULTS_FOUND</p>
+                        <p class="text-slate-600 text-sm mt-2">Try different keywords or adjust your filters</p>
+                    </div>
+                }
+
+                <!-- Initial state -->
+                @if (!results && !isLoading) {
+                    <div class="text-center py-20">
+                        <div class="text-6xl mb-6 opacity-50">🔎</div>
+                        <p class="text-slate-400 text-lg font-mono">ENTER_SEARCH_QUERY</p>
+                        <p class="text-slate-600 text-sm mt-2">Search your knowledge base by keywords or date range</p>
+                    </div>
+                }
+
+                <!-- Pagination -->
+                @if (results && results.totalPages > 1) {
+                    <div class="mt-8 flex gap-2 justify-center">
+                        <button
+                            (click)="previousPage()"
+                            [disabled]="results.page === 1"
+                            class="px-4 py-2 bg-slate-800/50 hover:bg-slate-800 disabled:bg-slate-900 text-slate-300 disabled:text-slate-600 font-mono text-sm rounded-lg transition-all border border-slate-700"
+                        >
+                            ← PREVIOUS
+                        </button>
+
+                        <div class="flex items-center gap-1">
+                            @for (pageNum of getPageNumbers(); track pageNum) {
+                                <button
+                                    (click)="goToPage(pageNum)"
+                                    [class.active]="pageNum === results.page"
+                                    class="w-10 h-10 rounded-lg font-mono text-sm transition-all border"
+                                    [ngClass]="pageNum === results.page
+                                        ? 'bg-indigo-600/30 border-indigo-500 text-indigo-300'
+                                        : 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-600'"
+                                >
+                                    {{ pageNum }}
+                                </button>
+                            }
+                        </div>
+
+                        <button
+                            (click)="nextPage()"
+                            [disabled]="results.page === results.totalPages"
+                            class="px-4 py-2 bg-slate-800/50 hover:bg-slate-800 disabled:bg-slate-900 text-slate-300 disabled:text-slate-600 font-mono text-sm rounded-lg transition-all border border-slate-700"
+                        >
+                            NEXT →
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </main>
+
+    <style>
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+    </style>
+</div>

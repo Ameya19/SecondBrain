@@ -1,0 +1,239 @@
+<div class="min-h-screen bg-black overflow-hidden relative">
+    <!-- Animated background grid -->
+    <div class="absolute inset-0 opacity-5">
+       <div class="absolute inset-0" style="background-image: linear-gradient(0deg, transparent 24%, rgba(0, 255, 255, 0.05) 25%, rgba(0, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.05) 75%, rgba(0, 255, 255, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 255, 0.05) 25%, rgba(0, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.05) 75%, rgba(0, 255, 255, 0.05) 76%, transparent 77%, transparent); background-size: 50px 50px;"></div>
+    </div>
+
+    <!-- Neon glow orbs -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 border-b border-cyan-900/50 bg-black/40 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-6 py-10">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                <p class="text-xs font-mono text-purple-400 tracking-widest">KNOWLEDGE_INGESTION_MODULE</p>
+            </div>
+            <h1 class="text-6xl font-black text-white mb-2">
+                Add Knowledge
+                <span class="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">Source</span>
+            </h1>
+            <p class="text-slate-500 font-mono text-sm">Ingest notes, documents, and articles into your second brain</p>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="relative z-10 max-w-5xl mx-auto px-6 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Content input section -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Tabs -->
+                <div class="flex gap-2 mb-8">
+                    <button
+                        (click)="activeTab = 'paste'"
+                        [class.active]="activeTab === 'paste'"
+                        class="px-6 py-3 rounded-lg font-mono text-sm font-semibold transition-all duration-300 border"
+                        [ngClass]="activeTab === 'paste' ? 'bg-purple-600/30 border-purple-500 text-purple-300' : 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-600'"
+                    >
+                        📝 PASTE TEXT
+                    </button>
+                    <button
+                        (click)="activeTab = 'upload'"
+                        [class.active]="activeTab === 'upload'"
+                        class="px-6 py-3 rounded-lg font-mono text-sm font-semibold transition-all duration-300 border"
+                        [ngClass]="activeTab === 'upload' 
+                            ? 'bg-purple-600/30 border-purple-500 text-purple-300' 
+                            : 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-600'"
+                    >
+                        📤 UPLOAD FILE
+                    </button>
+                </div>
+
+                <!-- Paste tab -->
+                @if(activeTab === 'paste') {
+                    <div class="space-y-6 animate-in fade-in duration-300">
+                        <div>
+                            <label class="block text-sm font-mono text-purple-400 mb-3 uppercase tracking-wider">Content</label>
+                            <textarea
+                                [(ngModel)]="formData.content"
+                                placeholder="Paste your text here... (notes, articles, research, etc.)"
+                                rows="12"
+                                class="w-full px-4 py-4 bg-black border border-slate-700 hover:border-slate-600 focus:border-purple-500 rounded-xl text-white placeholder-slate-600 focus:outline-none transition-all duration-300 font-mono text-sm resize-none"
+                            ></textarea>
+                            <p class="text-xs text-slate-600 mt-2">{{ formData.content.length }} characters</p>
+                        </div>
+                    </div>
+                }
+
+                <!-- Upload tab -->
+                @if(activeTab === 'upload') {
+                    <div class="space-y-6 animate-in fade-in duration-300">
+                        <div
+                            (dragover)="onDragOver($event)"
+                            (dragleave)="onDragLeave($event)"
+                            (drop)="onDrop($event)"
+                            [class.dragover]="isDragging"
+                            class="border-2 border-dashed border-slate-600 hover:border-purple-500 rounded-xl p-12 text-center transition-all duration-300 bg-gradient-to-b from-purple-950/10 to-transparent cursor-pointer"
+                        >
+                            <div class="text-4xl mb-3">📁</div>
+                            <p class="text-white font-semibold mb-1">Drag and drop your file here</p>
+                            <p class="text-slate-500 text-sm mb-4">or</p>
+                            <label class="inline-block px-6 py-3 bg-purple-600/30 border border-purple-500 text-purple-300 rounded-lg font-mono text-sm font-semibold hover:bg-purple-600/50 transition-all duration-300 cursor-pointer">
+                                BROWSE FILES
+                                <input
+                                    type="file"
+                                    accept=".pdf,.txt,.doc,.docx"
+                                    (change)="onFileSelected($event)"
+                                    class="hidden"
+                                />
+                            </label>
+                            <p class="text-xs text-slate-600 mt-4">Supported: PDF, TXT, DOC, DOCX</p>
+                        </div>
+
+                        @if(uploadedFileName) {
+                            <div class="flex items-center gap-3 p-4 bg-purple-950/30 border border-purple-500/30 rounded-lg">
+                                <span class="text-2xl">✅</span>
+                                <div>
+                                    <p class="text-white font-semibold">{{ uploadedFileName }}</p>
+                                    <p class="text-xs text-slate-500">Ready to ingest</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Metadata section -->
+            <div class="space-y-6">
+                <div class="bg-gradient-to-b from-slate-900 to-black border border-slate-800 rounded-2xl p-6">
+                    <div class="mb-6 flex items-center gap-2">
+                        <div class="w-1 h-5 bg-gradient-to-b from-pink-400 to-transparent"></div>
+                        <h3 class="text-lg font-bold text-pink-400 font-mono uppercase tracking-wider">Metadata</h3>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Title -->
+                        <div>
+                            <label class="block text-xs font-mono text-slate-500 mb-2 uppercase tracking-wider">Title</label>
+                            <input
+                                type="text"
+                                [(ngModel)]="formData.title"
+                                placeholder="e.g., RAG Implementation Guide"
+                                class="w-full px-3 py-2 bg-black border border-slate-700 hover:border-slate-600 focus:border-pink-500 rounded-lg text-white placeholder-slate-600 focus:outline-none transition-all duration-300 font-mono text-sm"
+                            />
+                        </div>
+
+                        <!-- Type -->
+                        <div>
+                            <label class="block text-xs font-mono text-slate-500 mb-2 uppercase tracking-wider">Type</label>
+                            <select
+                                [(ngModel)]="formData.type"
+                                class="w-full px-3 py-2 bg-black border border-slate-700 hover:border-slate-600 focus:border-pink-500 rounded-lg text-white focus:outline-none transition-all duration-300 font-mono text-sm"
+                            >
+                                <option value="note">Note</option>
+                                <option value="pdf">PDF</option>
+                                <option value="url">URL</option>
+                                <option value="youtube">YouTube</option>
+                            </select>
+                        </div>
+
+                        <!-- URL (if type is url) -->
+                        @if(formData.type === 'url') {
+                            <div>
+                                <label class="block text-xs font-mono text-slate-500 mb-2 uppercase tracking-wider">URL</label>
+                                <input
+                                    type="url"
+                                    [(ngModel)]="formData.url"
+                                    placeholder="https://example.com"
+                                    class="w-full px-3 py-2 bg-black border border-slate-700 hover:border-slate-600 focus:border-pink-500 rounded-lg text-white placeholder-slate-600 focus:outline-none transition-all duration-300 font-mono text-sm"
+                                />
+                            </div>
+                        }
+
+                        <!-- Published Date -->
+                        <div>
+                            <label class="block text-xs font-mono text-slate-500 mb-2 uppercase tracking-wider">Published Date</label>
+                            <input
+                                type="date"
+                                [(ngModel)]="publishedDate"
+                                class="w-full px-3 py-2 bg-black border border-slate-700 hover:border-slate-600 focus:border-pink-500 rounded-lg text-white focus:outline-none transition-all duration-300 font-mono text-sm"
+                            />
+                        </div>
+
+                        <!-- Tags -->
+                        <div>
+                            <label class="block text-xs font-mono text-slate-500 mb-2 uppercase tracking-wider">Tags</label>
+                            <input
+                                type="text"
+                                [(ngModel)]="tagsInput"
+                                placeholder="rag, embeddings, ai (comma-separated)"
+                                class="w-full px-3 py-2 bg-black border border-slate-700 hover:border-slate-600 focus:border-pink-500 rounded-lg text-white placeholder-slate-600 focus:outline-none transition-all duration-300 font-mono text-sm"
+                            />
+                        </div>
+
+                        <!-- Tags display -->
+                        @if(formData.tags && formData.tags.length > 0) {
+                            <div class="flex flex-wrap gap-2">
+                                @for(tag of formData.tags; track tag) {
+                                    <span class="px-3 py-1 bg-pink-950 border border-pink-500/30 text-pink-300 rounded-full text-xs font-mono">
+                                        {{ tag }}
+                                    </span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Submit button -->
+                <button
+                    (click)="onSubmit()"
+                    [disabled]="isSubmitting || !formData.content.trim() || !formData.title.trim()"
+                    class="w-full px-6 py-4 bg-gradient-to-br from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:from-slate-700 disabled:to-slate-700 text-white font-bold rounded-lg transition-all duration-300 disabled:cursor-not-allowed font-mono uppercase tracking-wider border border-purple-400/50 hover:border-purple-300 disabled:border-slate-600"
+                >
+                    @if(isSubmitting) {
+                        <span class="flex items-center justify-center gap-2">
+                            <span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                            PROCESSING
+                        </span>
+                    } @else {
+                        <span>⚡ INGEST NOW</span>
+                    }
+                </button>
+
+                <!-- Status message -->
+                @if (successMessage) {
+                    <div class="p-4 bg-emerald-950/30 border border-emerald-500/30 rounded-lg animate-in fade-in duration-300">
+                        <p class="text-emerald-300 font-mono text-sm">✅ {{ successMessage }}</p>
+                    </div>
+                }
+                @if (errorMessage) {
+                    <div class="p-4 bg-red-950/30 border border-red-500/30 rounded-lg animate-in fade-in duration-300">
+                        <p class="text-red-300 font-mono text-sm">❌ {{ errorMessage }}</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </main>
+
+    <style>
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+
+        .dragover {
+            border-color: rgb(168, 85, 247) !important;
+            background-color: rgb(88, 28, 135, 0.1) !important;
+        }
+    </style>
+</div>

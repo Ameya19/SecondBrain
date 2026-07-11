@@ -42,7 +42,7 @@ export interface SourceRef {
 export interface QueryResult {
     answer: string;
     sources: SourceRef[];
-    contradiction: string[];
+    contradictions: string[];
 }
 
 export interface IngestRequest {
@@ -55,7 +55,7 @@ export interface IngestRequest {
 }
 
 export interface IngestResponse{
-    sourceId: string;
+    SourceId: string;
 }
 
 export interface SearchResult {
@@ -108,22 +108,22 @@ export interface DecayResponse{
 }
 
 export interface OverallStats {
-    totalChunks: number;
-    totalSources: number;
-    totalQueries: number;
-    accessStats: {
-        totalAccess: number;
-        avgAccessPerChunk: number;
-        mostUsedChunk: Array<{
-            id: string;
-            accessCount: number;
-            source: string;
+    TotalChunks: number;
+    TotalSources: number;
+    TotalQueries: number;
+    AccessStats: {
+        TotalAccess: number;
+        AvgAccessPerChunk: number;
+        MostUsedChunk: Array<{
+            Id: string;
+            AccessCount: number;
+            Source: string;
         }>;
     }
-    sourcesByType: Array<{
-        type: string;
-        count: number;
-        sources: number;
+    SourceStats: Array<{
+        Type: string;
+        Count: number;
+        Sources: number;
     }>
 }
 

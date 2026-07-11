@@ -1,0 +1,244 @@
+<div class="min-h-screen bg-black overflow-hidden relative">
+    <!-- Animated background grid -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute inset-0" style="background-image: linear-gradient(0deg, transparent 24%, rgba(0, 255, 255, 0.05) 25%, rgba(0, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.05) 75%, rgba(0, 255, 255, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 255, 0.05) 25%, rgba(0, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.05) 75%, rgba(0, 255, 255, 0.05) 76%, transparent 77%, transparent); background-size: 50px 50px;"></div>
+    </div>
+
+    <!-- Neon glow orbs -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-600 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-600 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 border-b border-cyan-900/50 bg-black/40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-10">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                <p class="text-xs font-mono text-orange-400 tracking-widest">KNOWLEDGE_ANALYTICS_ENGINE</p>
+            </div>
+            <h1 class="text-6xl font-black text-white mb-2">
+                Insights & Analytics
+                <span class="bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent">Dashboard</span>
+            </h1>
+            <p class="text-slate-500 font-mono text-sm">Growth metrics • Knowledge decay • Temporal contradictions</p>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="relative z-10 max-w-7xl mx-auto px-6 py-16">
+        <!-- Growth section -->
+        <div class="mb-16">
+            <div class="mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-1 h-6 bg-gradient-to-b from-emerald-400 to-transparent"></div>
+                    <h2 class="text-2xl font-bold text-emerald-400 font-mono uppercase tracking-wider">Ingestion Growth</h2>
+                </div>
+                <select
+                    [(ngModel)]="growthPeriod"
+                    (change)="onGrowthPeriodChange()"
+                    class="px-4 py-2 bg-black border border-slate-700 hover:border-slate-600 focus:border-emerald-500 rounded-lg text-emerald-400 font-mono text-sm focus:outline-none transition-all"
+                >
+                    <option value="week">Weekly</option>
+                    <option value="month">Monthly</option>
+                    <option value="quarter">Quarterly</option>
+                    <option value="year">Yearly</option>
+                </select>
+            </div>
+
+            @if (growthStats) {
+                <div class="bg-gradient-to-b from-slate-900 to-black border border-slate-800 rounded-2xl p-8">
+                    <!-- Growth bar chart -->
+                    <div class="mb-8">
+                        <div class="space-y-4">
+                            @for (period of growthStats.timeline; track period.period) {
+                                <div class="group">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-mono text-slate-400">{{ period.period }}</span>
+                                        <span class="text-sm font-bold text-emerald-400">{{ period.count }} sources</span>
+                                    </div>
+                                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                        <div
+                                            class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-500"
+                                            [style.width]="((period.count / getMaxGrowth()) * 100) + '%'"
+                                        ></div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Growth stats -->
+                    <div class="grid grid-cols-2 gap-4 pt-6 border-t border-slate-700">
+                        <div>
+                            <p class="text-xs text-slate-500 font-mono uppercase">Total Sources</p>
+                            <p class="text-3xl font-black text-emerald-400 mt-1">{{ growthStats.totalSources }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-mono uppercase">Avg Per Period</p>
+                            <p class="text-3xl font-black text-cyan-400 mt-1">{{ growthStats.avgPerPeriod }}</p>
+                        </div>
+                    </div>
+                </div>
+            } @else {
+                <div class="bg-slate-900/50 border border-slate-700 rounded-2xl p-8 text-center text-slate-500">
+                    Loading growth data...
+                </div>
+            }
+        </div>
+
+        <!-- Decay section -->
+        <div class="mb-16">
+            <div class="mb-6 flex items-center gap-2">
+                <div class="w-1 h-6 bg-gradient-to-b from-amber-400 to-transparent"></div>
+                <h2 class="text-2xl font-bold text-amber-400 font-mono uppercase tracking-wider">Knowledge Decay</h2>
+            </div>
+
+            @if (decayStats) {
+                <div class="bg-gradient-to-b from-slate-900 to-black border border-slate-800 rounded-2xl p-8">
+                    <!-- Decay stats -->
+                    <div class="grid grid-cols-3 gap-4 mb-8">
+                        <div class="p-4 bg-amber-950/30 border border-amber-500/30 rounded-lg">
+                            <p class="text-xs text-amber-600 font-mono uppercase mb-2">Stale Chunks</p>
+                            <p class="text-3xl font-black text-amber-400">{{ decayStats.count }}</p>
+                        </div>
+                        <div class="p-4 bg-amber-950/30 border border-amber-500/30 rounded-lg">
+                            <p class="text-xs text-amber-600 font-mono uppercase mb-2">Threshold</p>
+                            <p class="text-2xl font-black text-amber-400">{{ decayStats.threshold }}</p>
+                        </div>
+                        <div class="p-4 bg-amber-950/30 border border-amber-500/30 rounded-lg">
+                            <p class="text-xs text-amber-600 font-mono uppercase mb-2">% of Total</p>
+                            <p class="text-3xl font-black text-amber-400">{{ decayStats.percentageOfTotal }}%</p>
+                        </div>
+                    </div>
+
+                    <!-- Decay list -->
+                    @if (decayStats.items.length > 0) {
+                        <div class="space-y-3 max-h-96 overflow-y-auto">
+                            @for (chunk of decayStats.items; track chunk.id) {
+                                <div class="p-4 bg-slate-800/50 border border-slate-700/50 hover:border-amber-500/50 rounded-lg transition-all duration-300">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <div>
+                                            <p class="text-white font-semibold">{{ chunk.source }}</p>
+                                            <p class="text-xs text-slate-500 mt-1">{{ chunk.preview }}</p>
+                                        </div>
+                                        <div class="text-right text-xs text-amber-400 font-mono">
+                                            <div>{{ chunk.daysSinceAdded }}d old</div>
+                                            <div class="text-slate-500">{{ chunk.daysSinceLastAccess }}d unused</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    } @else {
+                        <div class="text-center py-8 text-slate-500 font-mono">
+                            NO_STALE_KNOWLEDGE • YOUR_BRAIN_IS_FRESH
+                        </div>
+                    }
+                </div>
+            } @else {
+                <div class="bg-slate-900/50 border border-slate-700 rounded-2xl p-8 text-center text-slate-500">
+                    Loading decay data...
+                </div>
+            }
+        </div>
+
+        <!-- Contradictions section -->
+        <div class="mb-16">
+            <div class="mb-6 flex items-center gap-2">
+                <div class="w-1 h-6 bg-gradient-to-b from-red-400 to-transparent"></div>
+                <h2 class="text-2xl font-bold text-red-400 font-mono uppercase tracking-wider">Knowledge Conflicts</h2>
+            </div>
+
+            @if (contradictions) {
+                <div class="bg-gradient-to-b from-slate-900 to-black border border-slate-800 rounded-2xl p-8">
+                    <!-- Contradictions stats -->
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="p-4 bg-red-950/30 border border-red-500/30 rounded-lg">
+                            <p class="text-xs text-red-600 font-mono uppercase mb-2">Total Conflicts</p>
+                            <p class="text-3xl font-black text-red-400">{{ contradictions.totalContradictions }}</p>
+                        </div>
+                        <div class="p-4 bg-red-950/30 border border-red-500/30 rounded-lg">
+                            <p class="text-xs text-red-600 font-mono uppercase mb-2">Unresolved</p>
+                            <p class="text-3xl font-black text-orange-400">{{ contradictions.unresolved }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Contradictions list -->
+                    @if (contradictions.items.length > 0) {
+                        <div class="space-y-4">
+                            @for (item of contradictions.items; track item.id) {
+                                <div class="p-5 bg-red-950/20 border border-red-500/30 rounded-lg hover:border-red-500/50 transition-all duration-300">
+                                    <div class="mb-4">
+                                        <div class="flex items-start gap-3 mb-3">
+                                            <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                                                <span class="text-red-400 text-sm">⚠</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-semibold text-white mb-1">{{ item.chunkA.source }}</p>
+                                                <p class="text-sm text-slate-400">{{ item.chunkA.preview }}</p>
+                                                <p class="text-xs text-slate-600 mt-1">Added: {{ item.chunkA.ingestedAt | date: 'yyyy-MM-dd' }}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center justify-center mb-3">
+                                            <div class="text-xs text-red-400 font-mono bg-red-950/50 px-3 py-1 rounded">
+                                                {{ item.daysBetween | number:'0.0-0' }} days apart
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                                                <span class="text-red-400 text-sm">⚠</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-semibold text-white mb-1">{{ item.chunkB.source }}</p>
+                                                <p class="text-sm text-slate-400">{{ item.chunkB.preview }}</p>
+                                                <p class="text-xs text-slate-600 mt-1">Added: {{ item.chunkB.ingestedAt | date: 'yyyy-MM-dd' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if (!item.resolved) {
+                                        <button
+                                            (click)="resolveContradiction(item.id)"
+                                            class="w-full px-4 py-2 bg-red-600/30 hover:bg-red-600/50 text-red-300 font-mono text-xs rounded transition-all duration-300 border border-red-500/30"
+                                        >
+                                            MARK RESOLVED
+                                        </button>
+                                    } @else {
+                                        <div class="px-4 py-2 bg-emerald-600/30 text-emerald-300 font-mono text-xs rounded text-center border border-emerald-500/30">
+                                            ✅ RESOLVED
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    } @else {
+                        <div class="text-center py-12 text-slate-500 font-mono">
+                            NO_CONFLICTS • YOUR_KNOWLEDGE_IS_CONSISTENT
+                        </div>
+                    }
+                </div>
+            } @else {
+                <div class="bg-slate-900/50 border border-slate-700 rounded-2xl p-8 text-center text-slate-500">
+                    Loading contradictions...
+                </div>
+            }
+        </div>
+    </main>
+
+    <style>
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+    </style>
+</div>

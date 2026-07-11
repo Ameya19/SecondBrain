@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { catchError, Observable, tap, throwError } from "rxjs";
 import { ContradictionsResponse, DecayResponse, GrowthStats, OverallStats, SearchResponse } from "../models/brain.models";
 
 @Injectable({ providedIn: 'root' })
@@ -30,7 +30,15 @@ export class SearchService {
     }
 
     getOverallStats(): Observable<OverallStats> {
-        return this.http.get<OverallStats>(`${this.apiUrl}/insights/stats`);
+        return this.http.get<OverallStats>(`${this.apiUrl}/insights/stats`).pipe(
+            tap(response => {
+                console.log('Overall stats response:', response);
+            }),
+            catchError(error => {
+                console.error('Overall stats error:', error);
+                return throwError(() => error);
+            })
+        );
     }
 
     getContradictions(): Observable<ContradictionsResponse> {

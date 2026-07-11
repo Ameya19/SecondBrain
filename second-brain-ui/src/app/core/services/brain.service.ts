@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { IngestRequest, IngestResponse, QueryRequest, QueryResult, Source } from "../models/brain.models";
-import { Observable } from "rxjs";
+import { catchError, Observable, tap, throwError } from "rxjs";
 
 @Injectable({providedIn: 'root'})
 export class BrainService {
@@ -39,7 +39,15 @@ export class BrainService {
     }
 
     ingest(request: IngestRequest): Observable<IngestResponse> {
-        return this.http.post<IngestResponse>(`${this.apiUrl}/brain/ingest`, request);
+        return this.http.post<IngestResponse>(`${this.apiUrl}/brain/ingest`, request).pipe(
+            tap(response => {
+                console.log('Ingest response:', response);
+            }),
+            catchError(error => {
+                console.error('Ingest error:', error);
+                return throwError(() => error);
+            })
+        );
     }
 
     getSources(): Observable<Source[]> {

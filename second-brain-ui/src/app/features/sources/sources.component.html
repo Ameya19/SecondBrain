@@ -1,0 +1,272 @@
+<div class="min-h-screen bg-black overflow-hidden relative">
+    <!-- Animated background grid -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute inset-0" style="background-image: linear-gradient(0deg, transparent 24%, rgba(0, 255, 255, 0.05) 25%, rgba(0, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.05) 75%, rgba(0, 255, 255, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 255, 0.05) 25%, rgba(0, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, 0.05) 75%, rgba(0, 255, 255, 0.05) 76%, transparent 77%, transparent); background-size: 50px 50px;"></div>
+    </div>
+
+    <!-- Neon glow orbs -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 border-b border-cyan-900/50 bg-black/40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-10">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <p class="text-xs font-mono text-blue-400 tracking-widest">SOURCE_MANAGEMENT_SYSTEM</p>
+            </div>
+            <h1 class="text-6xl font-black text-white mb-2">
+                Knowledge Sources
+                <span class="bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">Catalog</span>
+            </h1>
+            <p class="text-slate-500 font-mono text-sm">Manage, organize, and delete your knowledge sources</p>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="relative z-10 max-w-7xl mx-auto px-6 py-16">
+        <!-- Filter section -->
+        <div class="mb-12 flex gap-3 flex-wrap">
+            <button
+                (click)="filterType = null"
+                [class.active]="filterType === null"
+                class="px-4 py-2 rounded-lg font-mono text-sm font-semibold transition-all duration-300 border"
+                [ngClass]="filterType === null
+                    ? 'bg-blue-600/30 border-blue-500 text-blue-300'
+                    : 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-600'"
+            >
+                ALL
+            </button>
+            <button
+                (click)="filterType = 'note'"
+                [class.active]="filterType === 'note'"
+                class="px-4 py-2 rounded-lg font-mono text-sm font-semibold transition-all duration-300 border"
+                [ngClass]="filterType === 'note'
+                    ? 'bg-blue-600/30 border-blue-500 text-blue-300'
+                    : 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-600'"
+            >
+                📝 NOTES
+            </button>
+            <button
+                (click)="filterType = 'pdf'"
+                [class.active]="filterType === 'pdf'"
+                class="px-4 py-2 rounded-lg font-mono text-sm font-semibold transition-all duration-300 border"
+                [ngClass]="filterType === 'pdf'
+                    ? 'bg-blue-600/30 border-blue-500 text-blue-300'
+                    : 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-600'"
+            >
+                📄 PDFs
+            </button>
+            <button
+                (click)="filterType = 'url'"
+                [class.active]="filterType === 'url'"
+                class="px-4 py-2 rounded-lg font-mono text-sm font-semibold transition-all duration-300 border"
+                [ngClass]="filterType === 'url'
+                    ? 'bg-blue-600/30 border-blue-500 text-blue-300'
+                    : 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-600'"
+            >
+                🔗 URLs
+            </button>
+            <button
+                (click)="filterType = 'youtube'"
+                [class.active]="filterType === 'youtube'"
+                class="px-4 py-2 rounded-lg font-mono text-sm font-semibold transition-all duration-300 border"
+                [ngClass]="filterType === 'youtube'
+                    ? 'bg-blue-600/30 border-blue-500 text-blue-300'
+                    : 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-600'"
+            >
+                ▶ YOUTUBE
+            </button>
+        </div>
+
+        <!-- Search box -->
+        <div class="mb-12">
+            <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                placeholder="Search sources by title..."
+                class="w-full px-4 py-3 bg-black border border-slate-700 hover:border-slate-600 focus:border-blue-500 rounded-lg text-white placeholder-slate-600 focus:outline-none transition-all duration-300 font-mono text-sm"
+            />
+        </div>
+
+        <!-- Sources grid -->
+        @if (filteredSources.length > 0) {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @for (source of filteredSources; track source.id; let i = $index) {
+                    <div
+                        class="group bg-gradient-to-b from-slate-900 to-black border border-slate-800 hover:border-blue-600/50 rounded-2xl p-6 transition-all duration-300 hover:bg-gradient-to-b hover:from-blue-950/20 hover:to-black animate-in fade-in slide-in-from-bottom-4"
+                        [style.animation-delay]="(i * 0.05) + 's'"
+                    >
+                        <!-- Header -->
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-start gap-3 flex-1">
+                                <div class="text-2xl mt-1">
+                                    @if (source.type === 'note') { <span>📝</span> }
+                                    @if (source.type === 'pdf') { <span>📄</span> }
+                                    @if (source.type === 'url') { <span>🔗</span> }
+                                    @if (source.type === 'youtube') { <span>▶</span> }
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-white group-hover:text-blue-300 transition-colors line-clamp-2">
+                                        {{ source.title }}
+                                    </h3>
+                                    <p class="text-xs text-slate-500 font-mono mt-1 uppercase">{{ source.type }}</p>
+                                </div>
+                            </div>
+                            <button
+                                (click)="onDelete(source.id)"
+                                class="p-2 rounded-lg bg-red-950/20 hover:bg-red-950/50 text-red-400 transition-all duration-300 opacity-0 group-hover:opacity-100"
+                            >
+                                🗑️
+                            </button>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="space-y-2 mb-4 pb-4 border-b border-slate-700">
+                            <p class="text-sm text-slate-400">
+                                <span class="text-slate-600">Added:</span>
+                                <span class="text-slate-300">{{ source.ingestedAt | date: 'MMM dd, yyyy' }}</span>
+                            </p>
+                            @if (source.publishedAt) {
+                                <p class="text-sm text-slate-400">
+                                    <span class="text-slate-600">Published:</span>
+                                    <span class="text-slate-300">{{ source.publishedAt | date: 'MMM dd, yyyy' }}</span>
+                                </p>
+                            }
+                            @if (source.url) {
+                                <p class="text-sm text-slate-400">
+                                    <span class="text-slate-600">URL:</span>
+                                    <a [href]="source.url" target="_blank" class="text-blue-400 hover:text-blue-300 truncate">
+                                        {{ source.url | slice:0:30 }}...
+                                    </a>
+                                </p>
+                            }
+                        </div>
+
+                        <!-- Chunks count -->
+                        <div class="mb-4 p-3 bg-blue-950/30 border border-blue-500/30 rounded-lg text-center">
+                            <p class="text-xs text-blue-600 font-mono uppercase mb-1">Chunks</p>
+                            <p class="text-2xl font-black text-blue-400">{{ source.chunkCount }}</p>
+                        </div>
+
+                        <!-- Tags -->
+                        @if (source.tags && source.tags.length > 0) {
+                            <div class="flex flex-wrap gap-2">
+                                @for (tag of source.tags; track tag) {
+                                    <span class="px-2 py-1 bg-slate-800 text-slate-400 rounded text-xs font-mono border border-slate-700">
+                                        #{{ tag }}
+                                    </span>
+                                }
+                            </div>
+                        }
+
+                        <!-- Actions -->
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <button
+                                (click)="onViewDetails(source.id)"
+                                class="w-full px-3 py-2 bg-blue-600/30 hover:bg-blue-600/50 text-blue-300 font-mono text-xs rounded transition-all duration-300 border border-blue-500/30"
+                            >
+                                VIEW DETAILS
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Empty state -->
+        @if (filteredSources.length === 0) {
+            <div class="text-center py-20">
+                <div class="text-6xl mb-6 opacity-50">📭</div>
+                <p class="text-slate-400 text-lg font-mono">NO_SOURCES_FOUND</p>
+                <p class="text-slate-600 text-sm mt-2">Try adding knowledge via the ingest interface</p>
+            </div>
+        }
+
+        <!-- Source details modal -->
+        @if (selectedSource) {
+            <div
+                class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6"
+                (click)="selectedSource = null"
+            >
+                <div
+                    class="bg-gradient-to-b from-slate-900 to-black border border-slate-700 rounded-2xl max-w-2xl w-full max-h-96 overflow-y-auto p-8 animate-in fade-in zoom-in-95 duration-300"
+                    (click)="$event.stopPropagation()"
+                >
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white mb-2">{{ selectedSource.title }}</h2>
+                            <p class="text-slate-500 font-mono text-sm">{{ selectedSource.type.toUpperCase() }}</p>
+                        </div>
+                        <button
+                            (click)="selectedSource = null"
+                            class="text-slate-500 hover:text-white transition-colors"
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <p class="text-xs text-slate-500 font-mono uppercase mb-1">Chunks</p>
+                            <p class="text-3xl font-black text-blue-400">{{ selectedSource.chunkCount }}</p>
+                        </div>
+
+                        @if (selectedSource.ingestionJob) {
+                            <div class="p-4 bg-slate-800/50 rounded-lg">
+                                <p class="text-xs text-slate-500 font-mono uppercase mb-2">Ingestion Status</p>
+                                <div class="space-y-1 text-sm">
+                                    <p class="text-white">Status: <span class="text-cyan-400 font-semibold">{{ selectedSource.ingestionJob.status }}</span></p>
+                                    <p class="text-slate-400">Started: {{ selectedSource.ingestionJob.startedAt | date: 'medium' }}</p>
+                                    @if (selectedSource.ingestionJob.completedAt) {
+                                        <p class="text-slate-400">
+                                            Completed: {{ selectedSource.ingestionJob.completedAt | date: 'medium' }}
+                                        </p>
+                                    }
+                                    @if (selectedSource.ingestionJob.errorMessage) {
+                                        <p class="text-red-400">
+                                            Error: {{ selectedSource.ingestionJob.errorMessage }}
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        @if (selectedSource.tags && selectedSource.tags.length > 0) {
+                            <div class="flex flex-wrap gap-2">
+                                @for (tag of selectedSource.tags; track tag) {
+                                    <span class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-xs font-mono border border-slate-700">
+                                        #{{ tag }}
+                                    </span>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <button
+                        (click)="onDelete(selectedSource.id); selectedSource = null"
+                        class="w-full px-4 py-3 bg-red-600/30 hover:bg-red-600/50 text-red-300 font-mono text-sm rounded-lg border border-red-500/30 transition-all duration-300"
+                    >
+                        DELETE SOURCE
+                    </button>
+                </div>
+            </div>
+        }
+    </main>
+
+    <style>
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+    </style>
+</div>
