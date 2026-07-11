@@ -29,7 +29,7 @@ namespace SecondBrain.Infrastructure.Services
                 Id = Guid.NewGuid(),
                 Title = metadata.Title,
                 Type = metadata.Type,
-                Url = metadata.Url,
+                Url = metadata.Url ?? "",
                 PublishedAt = metadata.PublishedAt,
                 IngestedAt = DateTimeOffset.UtcNow,
                 Tags = metadata.Tags

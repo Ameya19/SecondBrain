@@ -20,7 +20,7 @@ namespace SecondBrain.Infrastructure.Services
         {
             this.http = http;
             this.http.BaseAddress = new Uri("http://localhost:11434");
-            this.http.Timeout = TimeSpan.FromSeconds(30);
+            this.http.Timeout = TimeSpan.FromMinutes(5);
         }
 
         public async Task<float[]> EmbedAsync(string text)
